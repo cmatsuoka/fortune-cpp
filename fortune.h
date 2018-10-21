@@ -16,9 +16,12 @@ class Fortune {
     std::vector<Strfile> jars; // list of cookie files 
 public:
     Fortune();
+    void load(std::string const&, float);
     Fortune& long_fortunes();
     Fortune& short_fortunes();
     Fortune& short_len(int);
+    Strfile& pick_jar();
+    int print();
 };
 
 

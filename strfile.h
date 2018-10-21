@@ -32,6 +32,10 @@ public:
     std::string name; // cookie file name
     float weight;     // weight of this file for random pick
     std::string path; // path to strfile metadata file
+
+    Strfile();
+    Strfile& load(std::string const&, float);
+    int print_one(uint32_t, bool, bool, bool);
 };
 
 
