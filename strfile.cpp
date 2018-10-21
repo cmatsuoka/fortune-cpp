@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstring>
+#include <cerrno>
 #include <fstream>
 #include <algorithm>
 #include "strfile.h"
@@ -10,6 +12,9 @@ namespace {
     {
         char b[4];
         f.read(b, 4);
+        if (f.eof()) {
+            throw std::runtime_error("error reading file");
+        }
         return (((uint32_t)(uint8_t)b[0]) << 24) |
                (((uint32_t)(uint8_t)b[1]) << 16) |
                (((uint32_t)(uint8_t)b[2]) << 8)  |
@@ -23,15 +28,21 @@ namespace {
         return f.good();
     }
 
+    std::string error()
+    {
+        char *s = strerror(errno);
+        return std::string(s);
+    }
+
 }
 
 
 void Datfile::load(std::string const& path)
 {
-    std::ifstream file;
-    file.exceptions(std::ifstream::badbit);
-
-    file.open(path);
+    std::ifstream file(path);
+    if (file.fail()) {
+        throw std::runtime_error(path + ": " + error());
+    }
 
     version = read32b(file);
 
@@ -83,7 +94,7 @@ Strfile& Strfile::load(std::string const& path, float weight)
 
 int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show_file)
 {
-    int which = 1;
+    int which = rand() % dat.size();
     uint32_t start = dat.start_of(which);
     uint32_t size = dat.end_of(which) - start - 2;
 

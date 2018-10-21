@@ -23,6 +23,7 @@ public:
     uint32_t start_of(int which) { return seekpts[which]; }
     uint32_t end_of(int which) { return seekpts[which + 1]; }
     bool is_rotated() { return (flags & STRFILE_FLAG_ROTATED) != 0; }
+    int size() { return numstr; }
 };
 
 

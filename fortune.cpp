@@ -17,12 +17,13 @@ Fortune::Fortune() :
 
 namespace {
 
-    std::vector<std::string> add_fortune_file(std::vector<std::string>, std::string const& name, float val)
+    std::vector<PathSpec> add_fortune_file(std::vector<PathSpec>, std::string const& name, float val)
     {
-        std::vector<std::string> list{};
+        std::vector<PathSpec> list{};
 
         auto datname = name + ".dat";
-        list.push_back(name);  // FIXME
+        auto entry = std::make_tuple(name, val);
+        list.push_back(entry);
 
         return list;
     }
@@ -31,7 +32,7 @@ namespace {
 
 void Fortune::load(std::string const& what, float val)
 {
-    std::vector<std::string> files{};
+    std::vector<PathSpec> files{};
 
     files = add_fortune_file(files, what, val);
 
@@ -41,7 +42,7 @@ void Fortune::load(std::string const& what, float val)
 
     for (auto f : files) {
         auto sf = new Strfile();
-        jars.push_back(sf->load(f, 0.0)); // FIXME: weight
+        jars.push_back(sf->load(std::get<0>(f), std::get<1>(f)));
     }
 }
 

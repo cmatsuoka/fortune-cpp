@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <tuple>
 #include "strfile.h"
 
 
@@ -24,5 +25,7 @@ public:
     int print();
 };
 
+
+using PathSpec = std::tuple<std::string, float>;
 
 #endif
