@@ -41,8 +41,8 @@ void Fortune::load(std::string const& what, float val)
     }
 
     for (auto f : files) {
-        auto sf = new Strfile();
-        jars.push_back(sf->load(std::get<0>(f), std::get<1>(f)));
+        Strfile sf{};
+        jars.push_back(sf.load(std::get<0>(f), std::get<1>(f)));
     }
 }
 
