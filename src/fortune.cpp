@@ -69,7 +69,7 @@ Fortune& Fortune::short_len(int n)
 
 Strfile& Fortune::pick_jar()
 {
-    int num = (rand() % jars.size());
+    int num = rand() % jars.size();
     return jars[num];
 }
 

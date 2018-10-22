@@ -1,11 +1,12 @@
-#ifndef FORTUNE_STRFILE_H_
-#define FORTUNE_STRFILE_H_
+#ifndef SRC_STRFILE_H_
+#define SRC_STRFILE_H_
 
 #define STRFILE_VERSION      2
 #define STRFILE_FLAG_RANDOM  (0x1 << 0)  // randomized pointers
 #define STRFILE_FLAG_ORDERED (0x1 << 1)  // ordered pointers
 #define STRFILE_FLAG_ROTATED (0x1 << 2)  // rot-13'd text
 
+#include <string>
 #include <vector>
 
 
@@ -18,7 +19,7 @@ class Datfile {
     uint32_t stuff;                // long aligned space
     std::vector<uint32_t> seekpts; // seek pointers
 
-public:
+ public:
     void load(std::string const&);
     uint32_t start_of(int which) { return seekpts[which]; }
     uint32_t end_of(int which) { return seekpts[which + 1]; }
@@ -28,11 +29,12 @@ public:
 
 
 class Strfile {
-    Datfile dat;      // strfile metadata
-public:
-    std::string name; // cookie file name
-    float weight;     // weight of this file for random pick
-    std::string path; // path to strfile metadata file
+    Datfile dat;       // strfile metadata
+
+ public:
+    std::string name;  // cookie file name
+    float weight;      // weight of this file for random pick
+    std::string path;  // path to strfile metadata file
 
     Strfile();
     Strfile& load(std::string const&, float);
@@ -40,4 +42,4 @@ public:
 };
 
 
-#endif
+#endif  // SRC_STRFILE_H_

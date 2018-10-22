@@ -29,7 +29,6 @@ void Datfile::load(std::string const& path)
     if (flags & (STRFILE_FLAG_RANDOM | STRFILE_FLAG_ORDERED)) {
         std::sort(seekpts.begin(), seekpts.end());
     }
-
 }
 
 

@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv)
 {
-    srand((int)time(0));
+    srand(time(0));
     Fortune fortune{};
 
     try {

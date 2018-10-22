@@ -18,7 +18,7 @@ namespace {
         return std::string(s);
     }
 
-}
+}  // namespace
 
 
 File::File(std::string path, std::ios_base::openmode mode) :
@@ -56,7 +56,7 @@ File& File::read(char *buffer, int size)
     return *this;
 }
 
-File& File::seekg(long pos)
+File& File::seekg(off_t pos)
 {
     file.seekg(pos);
     return *this;

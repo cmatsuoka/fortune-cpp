@@ -1,5 +1,5 @@
-#ifndef FORTUNE_H_
-#define FORTUNE_H_
+#ifndef SRC_FORTUNE_H_
+#define SRC_FORTUNE_H_
 
 #include <string>
 #include <vector>
@@ -14,8 +14,8 @@ class Fortune {
     bool show_file;            // display cookie file names
     bool all_fortunes;         // allow offensive fortunes
     bool offend;               // choose only from offensive fortunes
-    std::vector<Strfile> jars; // list of cookie files 
-public:
+    std::vector<Strfile> jars; // list of cookie files
+ public:
     Fortune();
     void load(std::string const&, float);
     Fortune& long_fortunes();
@@ -28,4 +28,4 @@ public:
 
 using PathSpec = std::tuple<std::string, float>;
 
-#endif
+#endif  // SRC_FORTUNE_H_
