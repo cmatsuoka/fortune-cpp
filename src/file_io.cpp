@@ -1,4 +1,7 @@
 #include "file_io.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <cstring>
 #include <cerrno>
 #include <fstream>
@@ -57,10 +60,22 @@ File& File::seekg(off_t pos)
     return *this;
 }
 
-bool File::exists(std::string const& name)
+bool File::is_file(std::string const& name)
 {
-    std::ifstream f(name.c_str());
-    return f.good();
+    struct stat st;
+    if (stat(name.c_str(), &st) < 0) {
+        throw std::runtime_error(name + ": " + error());
+    }
+    return (st.st_mode & S_IFMT) == S_IFREG;
+}
+
+bool File::is_directory(std::string const& name)
+{
+    struct stat st;
+    if (stat(name.c_str(), &st) < 0) {
+        throw std::runtime_error(name + ": " + error());
+    }
+    return (st.st_mode & S_IFMT) == S_IFDIR;
 }
 
 char File::separator()

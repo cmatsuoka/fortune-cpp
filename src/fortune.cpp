@@ -52,7 +52,7 @@ namespace {
     {
         std::vector<PathSpec> list{};
 
-        if (File::exists(name + ".dat")) {
+        if (File::is_file(name + ".dat")) {
             auto entry = std::make_tuple(name, val);
             list.push_back(entry);
         } else {
@@ -64,11 +64,16 @@ namespace {
 
 }  // namespace
 
+
 void Fortune::load(std::string const& what, float val)
 {
     std::vector<PathSpec> files{};
 
-    files = add_fortune_dir(files, what, val, all_fortunes, offend);
+    if (File::is_directory(what)) {
+        files = add_fortune_dir(files, what, val, all_fortunes, offend);
+    } else if (File::is_file(what)) {
+        files = add_fortune_file(files, what, val);
+    }
 
     if (files.size() <= 0) {
         throw std::runtime_error("No fortunes found");

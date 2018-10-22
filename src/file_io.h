@@ -14,7 +14,8 @@ class File {
     uint32_t read32b();
     File& read(char *, int);
     File& seekg(off_t);
-    static bool exists(std::string const&);
+    static bool is_file(std::string const&);
+    static bool is_directory(std::string const&);
     static char separator();
 };
 
