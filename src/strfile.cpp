@@ -1,7 +1,7 @@
+#include "strfile.h"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include "strfile.h"
 #include "file_io.h"
 
 

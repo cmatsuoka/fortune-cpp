@@ -1,8 +1,8 @@
-#include <iostream>
-#include <random>
+#include "fortune.h"
 #include <sys/types.h>
 #include <dirent.h>
-#include "fortune.h"
+#include <iostream>
+#include <random>
 #include "file_io.h"
 
 
@@ -62,7 +62,7 @@ namespace {
         return list;
     }
 
-}
+}  // namespace
 
 void Fortune::load(std::string const& what, float val)
 {
