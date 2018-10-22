@@ -2,6 +2,7 @@
 #define SRC_FILE_IO_H_
 
 #include <string>
+#include <fstream>
 
 
 class File {
@@ -13,6 +14,8 @@ class File {
     uint32_t read32b();
     File& read(char *, int);
     File& seekg(off_t);
+    static bool exists(std::string const&);
+    static char separator();
 };
 
 

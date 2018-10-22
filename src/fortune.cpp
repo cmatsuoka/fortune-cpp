@@ -1,6 +1,9 @@
 #include <iostream>
 #include <random>
+#include <sys/types.h>
+#include <dirent.h>
 #include "fortune.h"
+#include "file_io.h"
 
 
 Fortune::Fortune() :
@@ -17,13 +20,44 @@ Fortune::Fortune() :
 
 namespace {
 
+    std::vector<PathSpec> add_fortune_dir(std::vector<PathSpec>, std::string const& dirname, float val,
+        bool all_fortunes, bool offend)
+    {
+        std::vector<PathSpec> list{};
+        std::vector<std::string> names{};
+        DIR *dir;
+        struct dirent *entry;
+
+        if ((dir = opendir(dirname.c_str())) != NULL) {
+            while ((entry = readdir(dir)) != NULL) {
+                auto fn = dirname + File::separator() + std::string(entry->d_name);
+                if (fn.substr(fn.find_last_of(".") + 1) == "dat") {
+                    // remove file extension
+                    names.push_back(fn.substr(0, fn.find_last_of(".")));
+                }
+            }
+            closedir(dir);
+        }
+
+        float num = names.size();
+        for (auto name : names) {
+            auto entry = std::make_tuple(name, val / num);
+            list.push_back(entry);
+        }
+
+        return list;
+    }
+
     std::vector<PathSpec> add_fortune_file(std::vector<PathSpec>, std::string const& name, float val)
     {
         std::vector<PathSpec> list{};
 
-        auto datname = name + ".dat";
-        auto entry = std::make_tuple(name, val);
-        list.push_back(entry);
+        if (File::exists(name + ".dat")) {
+            auto entry = std::make_tuple(name, val);
+            list.push_back(entry);
+        } else {
+            throw std::runtime_error(name + ": missing strfile data file");
+        }
 
         return list;
     }
@@ -34,7 +68,7 @@ void Fortune::load(std::string const& what, float val)
 {
     std::vector<PathSpec> files{};
 
-    files = add_fortune_file(files, what, val);
+    files = add_fortune_dir(files, what, val, all_fortunes, offend);
 
     if (files.size() <= 0) {
         throw std::runtime_error("No fortunes found");

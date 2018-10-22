@@ -6,17 +6,12 @@
 
 namespace {
 
-    bool file_exists(std::string const& name)
-    {
-        std::ifstream f(name.c_str());
-        return f.good();
-    }
-
     std::string error()
     {
         char *s = strerror(errno);
         return std::string(s);
     }
+
 
 }  // namespace
 
@@ -62,8 +57,26 @@ File& File::seekg(off_t pos)
     return *this;
 }
 
+bool File::exists(std::string const& name)
+{
+    std::ifstream f(name.c_str());
+    return f.good();
+}
+
+char File::separator()
+{
+#ifdef _WIN32
+    return '\\';
+#else
+    return '/';
+#endif
+}
+
+
+// InputFile
 
 InputFile::InputFile(std::string path) : File(path, std::fstream::in)
 {
 }
+
 
