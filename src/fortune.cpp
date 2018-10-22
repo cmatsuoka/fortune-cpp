@@ -65,6 +65,11 @@ namespace {
 }  // namespace
 
 
+/**
+ * Load cookie files metadata.
+ * @param what File or directory to load
+ * @param val Weight in random pick
+ */
 void Fortune::load(std::string const& what, float val)
 {
     std::vector<PathSpec> files{};
@@ -85,6 +90,9 @@ void Fortune::load(std::string const& what, float val)
     }
 }
 
+/**
+ * Select only long messages.
+ */
 Fortune& Fortune::long_fortunes()
 {
     long_only = true;
@@ -93,6 +101,9 @@ Fortune& Fortune::long_fortunes()
     return *this;
 }
 
+/**
+ * Select only short messages.
+ */
 Fortune& Fortune::short_fortunes()
 {
     long_only = false;
@@ -100,18 +111,28 @@ Fortune& Fortune::short_fortunes()
     return *this;
 }
 
+/**
+ * Set the short message threshold.
+ * @param n The new message threshold
+ */
 Fortune& Fortune::short_len(int n)
 {
     slen = n;
     return *this;
 }
 
+/**
+ * Choose a random cookie file weighted by its number of strings. (FIXME: not yet)
+ */
 Strfile& Fortune::pick_jar()
 {
     int num = rand() % jars.size();
     return jars[num];
 }
 
+/**
+ * Get a random string from a random cookie file.
+ */
 int Fortune::print()
 {
     return pick_jar().print_one(slen, long_only, short_only, show_file);

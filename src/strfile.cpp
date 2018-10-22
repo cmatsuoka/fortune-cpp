@@ -39,6 +39,12 @@ Strfile::Strfile() :
 {
 }
 
+/**
+ * Load string metadata from file.
+ * @param path The file to load
+ * @param weight The weight of this file in random pick
+ * @return This object
+ */
 Strfile& Strfile::load(std::string const& path, float weight)
 {
     std::string name("filename");
@@ -56,6 +62,14 @@ Strfile& Strfile::load(std::string const& path, float weight)
     return *this;
 }
 
+/**
+ * Print a random message from this file.
+ * @param slen Short message threshold
+ * @param long_only Print only long messages
+ * @param short_only Print only short messages
+ * @param show_file Display the file name
+ * @return The size of the printed message
+ */
 int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show_file)
 {
     int which = rand() % dat.size();

@@ -32,6 +32,10 @@ File::File(std::string path) : File(path, std::fstream::in | std::fstream::out)
 {
 }
 
+/**
+ * Read a 32-bit big-endian integer from file.
+ * @return The 32-bit value
+ */
 uint32_t File::read32b()
 {
     char b[4];
@@ -45,6 +49,12 @@ uint32_t File::read32b()
              (uint32_t)(uint8_t)b[3];
 }
 
+/**
+ * Read data from file.
+ * @param buffer Buffer to hold the input data
+ * @param size Amount of data to read
+ * @return This file object
+ */
 File& File::read(char *buffer, int size)
 {
     file.read(buffer, size);
@@ -54,12 +64,22 @@ File& File::read(char *buffer, int size)
     return *this;
 }
 
+/**
+ * Set the position of the next byte to read.
+ * @param pos The offset to set
+ * @return This file object
+ */
 File& File::seekg(off_t pos)
 {
     file.seekg(pos);
     return *this;
 }
 
+/**
+ * Check whether this name refers to a regular file.
+ * @param name Full path name
+ * @return True if is a regular file
+ */
 bool File::is_file(std::string const& name)
 {
     struct stat st;
@@ -69,6 +89,11 @@ bool File::is_file(std::string const& name)
     return (st.st_mode & S_IFMT) == S_IFREG;
 }
 
+/**
+ * Check whether this name refers to a directory.
+ * @param name Full path name
+ * @return True if is a directory
+ */
 bool File::is_directory(std::string const& name)
 {
     struct stat st;
