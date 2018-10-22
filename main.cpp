@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     Fortune *fortune = new Fortune();
 
     try {
-        fortune->load("/usr/share/games/fortune/wisdom", 1.0);
+        fortune->load("/usr/share/games/fortunes/wisdom", 1.0);
         fortune->print();
     } catch (std::exception& e) {
         std::cerr << argv[0] << ": " << e.what() << std::endl;

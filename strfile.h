@@ -1,5 +1,5 @@
-#ifndef STRFILE_H_
-#define STRFILE_H_
+#ifndef FORTUNE_STRFILE_H_
+#define FORTUNE_STRFILE_H_
 
 #define STRFILE_VERSION      2
 #define STRFILE_FLAG_RANDOM  (0x1 << 0)  // randomized pointers

@@ -1,63 +1,28 @@
 #include <iostream>
-#include <cstring>
-#include <cerrno>
 #include <fstream>
 #include <algorithm>
 #include "strfile.h"
-
-
-namespace {
-
-    uint32_t read32b(std::istream& f)
-    {
-        char b[4];
-        f.read(b, 4);
-        if (f.eof()) {
-            throw std::runtime_error("error reading file");
-        }
-        return (((uint32_t)(uint8_t)b[0]) << 24) |
-               (((uint32_t)(uint8_t)b[1]) << 16) |
-               (((uint32_t)(uint8_t)b[2]) << 8)  |
-                 (uint32_t)(uint8_t)b[3];
-           
-    }
-
-    bool file_exists(std::string const& name)
-    {
-        std::ifstream f(name.c_str());
-        return f.good();
-    }
-
-    std::string error()
-    {
-        char *s = strerror(errno);
-        return std::string(s);
-    }
-
-}
+#include "file_io.h"
 
 
 void Datfile::load(std::string const& path)
 {
-    std::ifstream file(path);
-    if (file.fail()) {
-        throw std::runtime_error(path + ": " + error());
-    }
+    InputFile file(path);
 
-    version = read32b(file);
+    version = file.read32b();
 
     if (version > STRFILE_VERSION) {
         throw std::runtime_error("invalid data file version");
     }
 
-    numstr = read32b(file);
-    longlen = read32b(file);
-    shortlen = read32b(file);
-    flags = read32b(file);
-    stuff = read32b(file);
+    numstr = file.read32b();
+    longlen = file.read32b();
+    shortlen = file.read32b();
+    flags = file.read32b();
+    stuff = file.read32b();
 
     for (uint32_t i = 0; i < numstr; i++) {
-        seekpts.push_back(read32b(file));
+        seekpts.push_back(file.read32b());
     }
 
     // if sorted or random, sort seek pointers
@@ -102,7 +67,7 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
         return 0;
     }
 
-    std::ifstream file(path);
+    InputFile file(path);
     file.seekg(start);
 
     // Read fortune string from file
@@ -111,7 +76,7 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
     temp[size] = 0;
 
     std::cout << temp;
-    delete temp;
+    delete [] temp;
 
     return size;
 }
