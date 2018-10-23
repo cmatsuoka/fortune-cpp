@@ -135,6 +135,18 @@ Fortune& Fortune::short_len(int n)
 }
 
 /**
+ * Set all weights to the same value.
+ * @return This fortune object
+ */
+Fortune& Fortune::equal_size()
+{
+    for (auto cf : jars) {
+        cf.weight = 1.0;
+    }
+    return *this;
+}
+
+/**
  * Show the file where the fortune came from
  * @return This fortune object
  */
@@ -163,6 +175,39 @@ Fortune& Fortune::offensive()
 {
     all_fortunes = false;
     offend = true;
+    return *this;
+}
+
+/**
+ * Normalize weights to totalize 100%
+ * @return This fortune object
+ */
+Fortune& Fortune::normalize_weights()
+{
+    float total = 100.0f;
+
+    for (auto cf : jars) {
+        if (cf.weight > 0.0f) {
+            total -= cf.weight;
+        }
+    }
+
+    if (total < 0.0f) {
+        throw std::runtime_error("percentages must be <= 100");
+    }
+
+    float w = 0.0f;
+    for (auto cf : jars) {
+        if (cf.weight < 0.0) {
+            w += cf.num_str();
+        }
+    }
+    for (auto cf : jars) {
+        if (cf.weight < 0.0) {
+            cf.weight = total * cf.num_str() / w;
+        }
+    }
+
     return *this;
 }
 

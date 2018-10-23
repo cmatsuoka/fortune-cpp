@@ -28,10 +28,10 @@ int main(int argc, char **argv)
     while ((c = getopt(argc, argv, "acefhilm:n:osw")) != -1) {
         switch (c) {
         case 'a':
-            fortune = fortune.all();
+            fortune.all();
             break;
         case 'c':
-            fortune = fortune.show_filename();
+            fortune.show_filename();
             break;
         case 'e':
             equal_size = true;
@@ -43,16 +43,16 @@ int main(int argc, char **argv)
             usage(argv[0]);
             exit(EXIT_SUCCESS);
         case 'l':
-            fortune = fortune.long_fortunes();
+            fortune.long_fortunes();
             break;
         case 'o':
-            fortune = fortune.offensive();
+            fortune.offensive();
             break;
         case 's':
-            fortune = fortune.short_fortunes();
+            fortune.short_fortunes();
             break;
         case 'n':
-            fortune = fortune.short_len(std::stoi(std::string(optarg)));
+            fortune.short_len(std::stoi(std::string(optarg)));
             break;
         }
     }
@@ -67,10 +67,17 @@ int main(int argc, char **argv)
     }
 
     try {
+        // load metadata
         for (auto it = filemap.begin(); it != filemap.end(); it++) {
             auto key = it->first;
             fortune.load(key, filemap[key]);
         }
+
+        if (equal_size) {
+            fortune.equal_size();
+        }
+
+        fortune.normalize_weights();
 
         if (list_files) {
             fortune.print_weights();

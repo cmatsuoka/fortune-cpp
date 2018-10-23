@@ -24,6 +24,8 @@ class Fortune {
     Fortune& short_fortunes();
     Fortune& show_filename();
     Fortune& short_len(int);
+    Fortune& equal_size();
+    Fortune& normalize_weights();
     Strfile& pick_jar();
     int print();
     void print_weights();
