@@ -20,6 +20,13 @@ Fortune::Fortune() :
 
 namespace {
 
+    bool ends_with(std::string const &s, std::string const &ending) {
+        if (s.length() < ending.length()) {
+            return false;
+        }
+        return s.compare(s.length() - ending.length(), ending.length(), ending) == 0;
+    }
+
     std::vector<PathSpec> add_fortune_dir(std::vector<PathSpec>, std::string const& dirname, float val,
         bool all_fortunes, bool offend)
     {
@@ -31,9 +38,12 @@ namespace {
         if ((dir = opendir(dirname.c_str())) != NULL) {
             while ((entry = readdir(dir)) != NULL) {
                 auto fn = dirname + File::separator() + std::string(entry->d_name);
-                if (fn.substr(fn.find_last_of(".") + 1) == "dat") {
+                if (ends_with(fn, ".dat")) {
                     // remove file extension
-                    names.push_back(fn.substr(0, fn.find_last_of(".")));
+                    auto name = fn.substr(0, fn.find_last_of("."));
+                    if (all_fortunes || !(offend ^ ends_with(name, "-o"))) {
+                        names.push_back(name);
+                    }
                 }
             }
             closedir(dir);
