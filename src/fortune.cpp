@@ -182,5 +182,10 @@ Strfile& Fortune::pick_jar()
  */
 int Fortune::print()
 {
-    return pick_jar().print_one(slen, long_only, short_only, show_file);
+    while (true) {
+        int val = pick_jar().print_one(slen, long_only, short_only, show_file);
+        if (val > 0) {
+            return val;
+        }
+    }
 }

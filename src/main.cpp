@@ -44,6 +44,9 @@ int main(int argc, char **argv)
         case 'c':
             fortune = fortune.show_filename();
             break;
+        case 'n':
+            fortune = fortune.short_len(std::stoi(std::string(optarg)));
+            break;
         case 'h':
             usage(argv[0]);
             exit(EXIT_SUCCESS);
