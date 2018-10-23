@@ -11,6 +11,7 @@
 
 
 class Datfile {
+
     uint32_t version;              // version number
     uint32_t numstr;               // # of strings in file
     uint32_t longlen;              // length of longest string
@@ -25,7 +26,10 @@ class Datfile {
     uint32_t end_of(int which) { return seekpts[which + 1]; }
     bool is_rotated() { return (flags & STRFILE_FLAG_ROTATED) != 0; }
     int size() { return numstr; }
+    int num_str() { return numstr; }
     char separator() { return stuff[0]; }
+    uint32_t get_longlen() { return longlen; }
+    uint32_t get_shortlen() { return shortlen; }
 };
 
 
@@ -40,6 +44,9 @@ class Strfile {
     Strfile();
     Strfile& load(std::string const&, float);
     int print_one(uint32_t, bool, bool, bool);
+    int num_str() { return dat.num_str(); }
+    int longlen() { return dat.get_longlen(); }
+    int shortlen() { return dat.get_shortlen(); }
 };
 
 

@@ -22,6 +22,7 @@ int main(int argc, char **argv)
     Fortune fortune{};
 
     auto equal_size = false;
+    auto list_files = false;
 
     int c;
     while ((c = getopt(argc, argv, "acefhilm:n:osw")) != -1) {
@@ -29,27 +30,30 @@ int main(int argc, char **argv)
         case 'a':
             fortune = fortune.all();
             break;
-        case 'o':
-            fortune = fortune.offensive();
+        case 'c':
+            fortune = fortune.show_filename();
             break;
         case 'e':
             equal_size = true;
             break;
-        case 'l':
-            fortune = fortune.long_fortunes();
-            break;
-        case 's':
-            fortune = fortune.short_fortunes();
-            break;
-        case 'c':
-            fortune = fortune.show_filename();
-            break;
-        case 'n':
-            fortune = fortune.short_len(std::stoi(std::string(optarg)));
+        case 'f':
+            list_files = true;
             break;
         case 'h':
             usage(argv[0]);
             exit(EXIT_SUCCESS);
+        case 'l':
+            fortune = fortune.long_fortunes();
+            break;
+        case 'o':
+            fortune = fortune.offensive();
+            break;
+        case 's':
+            fortune = fortune.short_fortunes();
+            break;
+        case 'n':
+            fortune = fortune.short_len(std::stoi(std::string(optarg)));
+            break;
         }
     }
 
@@ -67,6 +71,12 @@ int main(int argc, char **argv)
             auto key = it->first;
             fortune.load(key, filemap[key]);
         }
+
+        if (list_files) {
+            fortune.print_weights();
+            exit(EXIT_SUCCESS);
+        }
+
         fortune.print();
     } catch (std::exception& e) {
         std::cerr << argv[0] << ": " << e.what() << std::endl;

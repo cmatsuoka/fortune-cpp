@@ -26,6 +26,7 @@ class Fortune {
     Fortune& short_len(int);
     Strfile& pick_jar();
     int print();
+    void print_weights();
 };
 
 

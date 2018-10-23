@@ -189,3 +189,10 @@ int Fortune::print()
         }
     }
 }
+
+void Fortune::print_weights()
+{
+    for (auto cf : jars) {
+        printf(" %6.2f %5d %5d %5d %s\n", cf.weight, cf.num_str(), cf.longlen(), cf.shortlen(), cf.path.c_str());
+    }
+}
