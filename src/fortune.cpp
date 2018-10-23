@@ -92,6 +92,7 @@ void Fortune::load(std::string const& what, float val)
 
 /**
  * Select only long messages.
+ * @return This fortune object
  */
 Fortune& Fortune::long_fortunes()
 {
@@ -103,6 +104,7 @@ Fortune& Fortune::long_fortunes()
 
 /**
  * Select only short messages.
+ * @return This fortune object
  */
 Fortune& Fortune::short_fortunes()
 {
@@ -114,6 +116,7 @@ Fortune& Fortune::short_fortunes()
 /**
  * Set the short message threshold.
  * @param n The new message threshold
+ * @return This fortune object
  */
 Fortune& Fortune::short_len(int n)
 {
@@ -122,7 +125,40 @@ Fortune& Fortune::short_len(int n)
 }
 
 /**
+ * Show the file where the fortune came from
+ * @return This fortune object
+ */
+Fortune& Fortune::show_filename()
+{
+    show_file = true;
+    return *this;
+}
+
+/**
+ * Allow both offensive and not offensive fortunes.
+ * @return This fortune object
+ */
+Fortune& Fortune::all()
+{
+    all_fortunes = true;
+    offend = false;
+    return *this;
+}
+
+/**
+ * Select only from offensive fortunes.
+ * @return This fortune object
+ */
+Fortune& Fortune::offensive()
+{
+    all_fortunes = false;
+    offend = true;
+    return *this;
+}
+
+/**
  * Choose a random cookie file weighted by its number of strings. (FIXME: not yet)
+ * @return The cookie jar string file
  */
 Strfile& Fortune::pick_jar()
 {
@@ -132,6 +168,7 @@ Strfile& Fortune::pick_jar()
 
 /**
  * Get a random string from a random cookie file.
+ * @return The size of the printed message
  */
 int Fortune::print()
 {

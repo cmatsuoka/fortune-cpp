@@ -18,8 +18,11 @@ class Fortune {
  public:
     Fortune();
     void load(std::string const&, float);
+    Fortune& all();
+    Fortune& offensive();
     Fortune& long_fortunes();
     Fortune& short_fortunes();
+    Fortune& show_filename();
     Fortune& short_len(int);
     Strfile& pick_jar();
     int print();

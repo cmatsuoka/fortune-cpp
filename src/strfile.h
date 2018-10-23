@@ -16,7 +16,7 @@ class Datfile {
     uint32_t longlen;              // length of longest string
     uint32_t shortlen;             // length of shortest string
     uint32_t flags;                // bit field for flags
-    uint32_t stuff;                // long aligned space
+    char stuff[4];                 // long aligned space
     std::vector<uint32_t> seekpts; // seek pointers
 
  public:
@@ -25,6 +25,7 @@ class Datfile {
     uint32_t end_of(int which) { return seekpts[which + 1]; }
     bool is_rotated() { return (flags & STRFILE_FLAG_ROTATED) != 0; }
     int size() { return numstr; }
+    char separator() { return stuff[0]; }
 };
 
 

@@ -19,7 +19,7 @@ void Datfile::load(std::string const& path)
     longlen = file.read32b();
     shortlen = file.read32b();
     flags = file.read32b();
-    stuff = file.read32b();
+    file.read(stuff, 4);
 
     for (uint32_t i = 0; i < numstr; i++) {
         seekpts.push_back(file.read32b());
@@ -31,6 +31,8 @@ void Datfile::load(std::string const& path)
     }
 }
 
+
+// Strfile
 
 Strfile::Strfile() :
     name(""),
@@ -47,7 +49,7 @@ Strfile::Strfile() :
  */
 Strfile& Strfile::load(std::string const& path, float weight)
 {
-    std::string name("filename");
+    std::string name(path.substr(path.find_last_of(File::separator()) + 1));
 
     // check if file exists
     // ...
@@ -88,8 +90,13 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
     file.read(temp, size);
     temp[size] = 0;
 
-    std::cout << temp;
+    if (show_file) {
+        std::cout << "(" << name << ")\n" << dat.separator() << "\n";
+    }
+
+    std::cout << temp << std::flush;
     delete [] temp;
 
     return size;
 }
+
