@@ -1,8 +1,26 @@
 #include "strfile.h"
+#include <string.h>
+#include <ctype.h>
 #include <iostream>
-#include <fstream>
 #include <algorithm>
 #include "file_io.h"
+
+
+namespace {
+
+    template <typename Iter> void rot13(Iter a, const Iter& b) {
+        for (; a != b; a++) {
+            auto c = toupper(*a);
+            if (c >= 'A' && c <= 'M') {
+                *a += 13;
+            } else if (c >= 'N' && c <= 'Z') {
+                *a -= 13;
+            }
+        }
+    }
+
+
+}  // namespace
 
 
 void Datfile::load(std::string const& path)
@@ -89,6 +107,10 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
     char *temp = new char[size + 1];
     file.read(temp, size);
     temp[size] = 0;
+
+    if (dat.is_rotated()) {
+        rot13(temp, temp + strlen(temp));
+    }
 
     if (show_file) {
         std::cout << "(" << name << ")\n" << dat.separator() << "\n";
