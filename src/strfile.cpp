@@ -105,15 +105,12 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
     file.seekg(start);
 
     // Read fortune string from file
-    char *temp = new char[size + 1];
+    // pre-C++17: specify the deleter
+    std::shared_ptr<char> buffer(new char[size + 1], std::default_delete<char[]>());
+    char *temp = buffer.get();
 
-    try {
-        file.read(temp, size);
-        temp[size] = '\0';
-    } catch (std::exception const& e) {
-        delete [] temp;
-        throw;
-    }
+    file.read(temp, size);
+    temp[size] = '\0';
 
     if (dat.is_rotated()) {
         rot13(temp, temp + strlen(temp));
@@ -124,7 +121,6 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
     }
 
     std::cout << temp << std::flush;
-    delete [] temp;
 
     return size;
 }
@@ -141,33 +137,28 @@ int Strfile::print_matches(std::regex re, int slen, bool long_only, bool short_o
 {
     InputFile file(path);
 
-    char *temp = new char[longlen() + 1];
+    // pre-C++17: specify the deleter
+    std::shared_ptr<char> buffer(new char[longlen() + 1], std::default_delete<char[]>());
+    char *temp = buffer.get();
     int num_matches = 0;
 
     std::cerr << "(" << name << ")\n" << dat.separator() << std::endl;
 
-    try {
-        for (int i = 0; i < num_str(); i++) {
-            auto start = dat.start_of(i);
-            auto size = dat.end_of(i) - start - 2;
-    
-            if ((!long_only && size <= slen) || (!short_only && size > slen)) {
-                file.seekg(start);
-                file.read(temp, size);
-                temp[size] = '\0';
-    
-                if (regex_search(temp, re) > 0) {
-                    std::cout << temp << std::endl;
-                    num_matches++;
-                }
+    for (int i = 0; i < num_str(); i++) {
+        auto start = dat.start_of(i);
+        auto size = dat.end_of(i) - start - 2;
+
+        if ((!long_only && size <= slen) || (!short_only && size > slen)) {
+            file.seekg(start);
+            file.read(temp, size);
+            temp[size] = '\0';
+
+            if (regex_search(temp, re) > 0) {
+                std::cout << temp << std::endl;
+                num_matches++;
             }
         }
-    } catch (std::exception const& e) {
-        delete [] temp;
-        throw;
     }
-
-    delete [] temp;
 
     return num_matches;
 }
