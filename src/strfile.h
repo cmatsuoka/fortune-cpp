@@ -6,9 +6,9 @@
 #define STRFILE_FLAG_ORDERED (0x1 << 1)  // ordered pointers
 #define STRFILE_FLAG_ROTATED (0x1 << 2)  // rot-13'd text
 
+#include <regex.h>
 #include <string>
 #include <vector>
-#include <regex>
 
 
 class Datfile {
@@ -45,7 +45,7 @@ class Strfile {
     Strfile();
     Strfile& load(std::string const&, float);
     int print_one(uint32_t, bool, bool, bool);
-    int print_matches(std::regex, int, bool, bool);
+    int print_matches(regex_t *, int, bool, bool);
     int num_str() { return dat.num_str(); }
     int longlen() { return dat.get_longlen(); }
     int shortlen() { return dat.get_shortlen(); }

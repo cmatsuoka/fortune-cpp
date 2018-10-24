@@ -1,9 +1,9 @@
 #include "fortune.h"
 #include <sys/types.h>
 #include <dirent.h>
+#include <regex.h>
 #include <iostream>
 #include <random>
-#include <regex>
 #include "file_io.h"
 
 
@@ -248,16 +248,25 @@ int Fortune::print()
  */
 void Fortune::search(std::string pattern, bool case_insensitive)
 {
-    auto flags = std::regex_constants::egrep;
+    int flags = 0;
     if (case_insensitive) {
-        flags |= std::regex_constants::icase;
+        flags |= REG_ICASE;
     }
 
-    std::regex re(pattern, flags);
+    // Use plain C regex.h, it's way faster than C++ std::regex
+    regex_t re;
+    regcomp(&re, pattern.c_str(), flags);
 
-    for (auto cf: jars) {
-        cf->print_matches(re, slen, long_only, short_only);
+    try {
+        for (auto cf : jars) {
+            cf->print_matches(&re, slen, long_only, short_only);
+        }
+    } catch (std::exception const& e) {
+        regfree(&re);
+        throw;
     }
+
+    regfree(&re);
 }
 
 void Fortune::print_weights()

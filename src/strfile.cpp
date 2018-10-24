@@ -1,9 +1,10 @@
 #include "strfile.h"
 #include <string.h>
 #include <ctype.h>
+#include <regex.h>
 #include <iostream>
 #include <algorithm>
-#include <regex>
+#include <memory>
 #include "file_io.h"
 
 
@@ -133,7 +134,7 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
  * @param short_only Match only short messages
  * @return The number of matched messages
  */
-int Strfile::print_matches(std::regex re, int slen, bool long_only, bool short_only)
+int Strfile::print_matches(regex_t *re, int slen, bool long_only, bool short_only)
 {
     InputFile file(path);
 
@@ -153,7 +154,7 @@ int Strfile::print_matches(std::regex re, int slen, bool long_only, bool short_o
             file.read(temp, size);
             temp[size] = '\0';
 
-            if (regex_search(temp, re) > 0) {
+            if (regexec(re, temp, 0, NULL, 0) == 0) {
                 std::cout << temp << std::endl;
                 num_matches++;
             }
