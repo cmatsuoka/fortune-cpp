@@ -76,6 +76,13 @@ namespace {
 }  // namespace
 
 
+Fortune::~Fortune()
+{
+    for (int i = 0; i < jars.size(); i++) {
+        delete jars[i];
+    }
+}
+
 /**
  * Load cookie files metadata.
  * @param what File or directory to load
@@ -96,8 +103,8 @@ void Fortune::load(std::string const& what, float val)
     }
 
     for (auto f : files) {
-        Strfile sf{};
-        jars.push_back(sf.load(std::get<0>(f), std::get<1>(f)));
+        auto sf = new Strfile();
+        jars.push_back(&(sf->load(std::get<0>(f), std::get<1>(f))));
     }
 }
 
@@ -142,7 +149,7 @@ Fortune& Fortune::short_len(int n)
 Fortune& Fortune::equal_size()
 {
     for (auto cf : jars) {
-        cf.weight = 1.0;
+        cf->weight = 1.0;
     }
     return *this;
 }
@@ -188,8 +195,8 @@ Fortune& Fortune::normalize_weights()
     float total = 100.0f;
 
     for (auto cf : jars) {
-        if (cf.weight > 0.0f) {
-            total -= cf.weight;
+        if (cf->weight > 0.0f) {
+            total -= cf->weight;
         }
     }
 
@@ -199,13 +206,13 @@ Fortune& Fortune::normalize_weights()
 
     float w = 0.0f;
     for (auto cf : jars) {
-        if (cf.weight < 0.0) {
-            w += cf.num_str();
+        if (cf->weight < 0.0) {
+            w += cf->num_str();
         }
     }
     for (auto cf : jars) {
-        if (cf.weight < 0.0) {
-            cf.weight = total * cf.num_str() / w;
+        if (cf->weight < 0.0) {
+            cf->weight = total * cf->num_str() / w;
         }
     }
 
@@ -216,7 +223,7 @@ Fortune& Fortune::normalize_weights()
  * Choose a random cookie file weighted by its number of strings. (FIXME: not yet)
  * @return The cookie jar string file
  */
-Strfile& Fortune::pick_jar()
+Strfile *Fortune::pick_jar()
 {
     int num = rand() % jars.size();
     return jars[num];
@@ -229,7 +236,7 @@ Strfile& Fortune::pick_jar()
 int Fortune::print()
 {
     while (true) {
-        int val = pick_jar().print_one(slen, long_only, short_only, show_file);
+        int val = pick_jar()->print_one(slen, long_only, short_only, show_file);
         if (val > 0) {
             return val;
         }
@@ -249,13 +256,14 @@ void Fortune::search(std::string pattern, bool case_insensitive)
     std::regex re(pattern, flags);
 
     for (auto cf: jars) {
-        cf.print_matches(re, slen, long_only, short_only);
+        cf->print_matches(re, slen, long_only, short_only);
     }
 }
 
 void Fortune::print_weights()
 {
     for (auto cf : jars) {
-        printf(" %6.2f %5d %5d %5d %s\n", cf.weight, cf.num_str(), cf.longlen(), cf.shortlen(), cf.path.c_str());
+        printf(" %6.2f %5d %5d %5d %s\n",
+            cf->weight, cf->num_str(), cf->longlen(), cf->shortlen(), cf->path.c_str());
     }
 }

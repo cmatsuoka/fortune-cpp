@@ -14,9 +14,10 @@ class Fortune {
     bool show_file;            // display cookie file names
     bool all_fortunes;         // allow offensive fortunes
     bool offend;               // choose only from offensive fortunes
-    std::vector<Strfile> jars; // list of cookie files
+    std::vector<Strfile *> jars; // list of cookie files
  public:
     Fortune();
+    ~Fortune();
     void load(std::string const&, float);
     Fortune& all();
     Fortune& offensive();
@@ -26,7 +27,7 @@ class Fortune {
     Fortune& short_len(int);
     Fortune& equal_size();
     Fortune& normalize_weights();
-    Strfile& pick_jar();
+    Strfile *pick_jar();
     int print();
     void search(std::string, bool = false);
     void print_weights();
