@@ -142,8 +142,7 @@ int Strfile::print_matches(regex_t *re, int slen, bool long_only, bool short_onl
     std::shared_ptr<char> buffer(new char[longlen() + 1], std::default_delete<char[]>());
     char *temp = buffer.get();
     int num_matches = 0;
-
-    std::cerr << "(" << name << ")\n" << dat.separator() << std::endl;
+    bool print_name = true;
 
     for (int i = 0; i < num_str(); i++) {
         auto start = dat.start_of(i);
@@ -155,6 +154,11 @@ int Strfile::print_matches(regex_t *re, int slen, bool long_only, bool short_onl
             temp[size] = '\0';
 
             if (regexec(re, temp, 0, NULL, 0) == 0) {
+                if (print_name) {
+                    std::cerr << "(" << name << ")\n" << dat.separator() << std::endl;
+                    print_name = false;
+                }
+
                 std::cout << temp << std::endl;
                 num_matches++;
             }
