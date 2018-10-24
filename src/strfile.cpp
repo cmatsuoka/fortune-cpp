@@ -72,7 +72,9 @@ Strfile& Strfile::load(std::string const& path, float weight)
     std::string name(path.substr(path.find_last_of(File::separator()) + 1));
 
     // check if file exists
-    // ...
+    if (!File::is_file(path)) {
+        throw std::runtime_error(path + ": invalid file type");
+    }
 
     std::string dat_path(path + ".dat");
     dat.load(dat_path);
