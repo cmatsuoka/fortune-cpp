@@ -28,6 +28,7 @@ class Fortune {
     Fortune& normalize_weights();
     Strfile& pick_jar();
     int print();
+    void search(std::string, bool = false);
     void print_weights();
 };
 

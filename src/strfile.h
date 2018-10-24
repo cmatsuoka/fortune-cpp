@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <regex>
 
 
 class Datfile {
@@ -44,6 +45,7 @@ class Strfile {
     Strfile();
     Strfile& load(std::string const&, float);
     int print_one(uint32_t, bool, bool, bool);
+    int print_matches(std::regex, int, bool, bool);
     int num_str() { return dat.num_str(); }
     int longlen() { return dat.get_longlen(); }
     int shortlen() { return dat.get_shortlen(); }

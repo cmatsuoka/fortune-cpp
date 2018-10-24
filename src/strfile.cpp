@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <iostream>
 #include <algorithm>
+#include <regex>
 #include "file_io.h"
 
 
@@ -39,7 +40,7 @@ void Datfile::load(std::string const& path)
     flags = file.read32b();
     file.read(stuff, 4);
 
-    for (uint32_t i = 0; i < numstr; i++) {
+    for (uint32_t i = 0; i <= numstr; i++) {
         seekpts.push_back(file.read32b());
     }
 
@@ -93,8 +94,8 @@ Strfile& Strfile::load(std::string const& path, float weight)
 int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show_file)
 {
     int which = rand() % dat.size();
-    uint32_t start = dat.start_of(which);
-    uint32_t size = dat.end_of(which) - start - 2;
+    auto start = dat.start_of(which);
+    auto size = dat.end_of(which) - start - 2;
 
     if ((long_only || size > slen) && (short_only || size <= slen)) {
         return 0;
@@ -106,7 +107,7 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
     // Read fortune string from file
     char *temp = new char[size + 1];
     file.read(temp, size);
-    temp[size] = 0;
+    temp[size] = '\0';
 
     if (dat.is_rotated()) {
         rot13(temp, temp + strlen(temp));
@@ -122,3 +123,38 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
     return size;
 }
 
+/**
+ * Print all messages from this file matching a given regular expression.
+ * @param re The regular expression to match
+ * @param slen The short message threshold
+ * @param long_only Match only long messages
+ * @param short_only Match only short messages
+ * @return The number of matched messages
+ */
+int Strfile::print_matches(std::regex re, int slen, bool long_only, bool short_only)
+{
+    char *temp = new char[longlen() + 1];
+    int num_matches = 0;
+
+    InputFile file(path);
+
+    std::cerr << "(" << name << ")\n" << dat.separator() << std::endl;
+
+    for (int i = 0; i < num_str(); i++) {
+        auto start = dat.start_of(i);
+        auto size = dat.end_of(i) - start - 2;
+
+        if ((!long_only && size <= slen) || (!short_only && size > slen)) {
+            file.seekg(start);
+            file.read(temp, size);
+            temp[size] = '\0';
+
+            if (regex_search(temp, re) > 0) {
+                std::cout << temp << std::endl;
+                num_matches++;
+            }
+        }
+    }
+
+    return num_matches;
+}

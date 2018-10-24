@@ -23,6 +23,8 @@ int main(int argc, char **argv)
 
     auto equal_size = false;
     auto list_files = false;
+    auto case_insensitive = false;
+    auto pattern = std::string();
 
     int c;
     while ((c = getopt(argc, argv, "acefhilm:n:osw")) != -1) {
@@ -42,17 +44,23 @@ int main(int argc, char **argv)
         case 'h':
             usage(argv[0]);
             exit(EXIT_SUCCESS);
+        case 'i':
+            case_insensitive = true;
+            break;
         case 'l':
             fortune.long_fortunes();
+            break;
+        case 'm':
+            pattern = std::string(optarg);
+            break;
+        case 'n':
+            fortune.short_len(std::stoi(std::string(optarg)));
             break;
         case 'o':
             fortune.offensive();
             break;
         case 's':
             fortune.short_fortunes();
-            break;
-        case 'n':
-            fortune.short_len(std::stoi(std::string(optarg)));
             break;
         }
     }
@@ -84,7 +92,11 @@ int main(int argc, char **argv)
             exit(EXIT_SUCCESS);
         }
 
-        fortune.print();
+        if (pattern != "") {
+            fortune.search(pattern, case_insensitive);
+        } else {
+            fortune.print();
+        }
     } catch (std::exception& e) {
         std::cerr << argv[0] << ": " << e.what() << std::endl;
         exit(EXIT_FAILURE);

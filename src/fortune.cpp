@@ -3,6 +3,7 @@
 #include <dirent.h>
 #include <iostream>
 #include <random>
+#include <regex>
 #include "file_io.h"
 
 
@@ -232,6 +233,23 @@ int Fortune::print()
         if (val > 0) {
             return val;
         }
+    }
+}
+
+/**
+ * Get all strings that match a given regexp pattern.
+ */
+void Fortune::search(std::string pattern, bool case_insensitive)
+{
+    auto flags = std::regex_constants::egrep;
+    if (case_insensitive) {
+        flags |= std::regex_constants::icase;
+    }
+
+    std::regex re(pattern, flags);
+
+    for (auto cf: jars) {
+        cf.print_matches(re, slen, long_only, short_only);
     }
 }
 
