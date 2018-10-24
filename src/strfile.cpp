@@ -106,8 +106,14 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
 
     // Read fortune string from file
     char *temp = new char[size + 1];
-    file.read(temp, size);
-    temp[size] = '\0';
+
+    try {
+        file.read(temp, size);
+        temp[size] = '\0';
+    } catch (std::exception const& e) {
+        delete [] temp;
+        throw;
+    }
 
     if (dat.is_rotated()) {
         rot13(temp, temp + strlen(temp));
@@ -133,28 +139,35 @@ int Strfile::print_one(uint32_t slen, bool long_only, bool short_only, bool show
  */
 int Strfile::print_matches(std::regex re, int slen, bool long_only, bool short_only)
 {
+    InputFile file(path);
+
     char *temp = new char[longlen() + 1];
     int num_matches = 0;
 
-    InputFile file(path);
-
     std::cerr << "(" << name << ")\n" << dat.separator() << std::endl;
 
-    for (int i = 0; i < num_str(); i++) {
-        auto start = dat.start_of(i);
-        auto size = dat.end_of(i) - start - 2;
-
-        if ((!long_only && size <= slen) || (!short_only && size > slen)) {
-            file.seekg(start);
-            file.read(temp, size);
-            temp[size] = '\0';
-
-            if (regex_search(temp, re) > 0) {
-                std::cout << temp << std::endl;
-                num_matches++;
+    try {
+        for (int i = 0; i < num_str(); i++) {
+            auto start = dat.start_of(i);
+            auto size = dat.end_of(i) - start - 2;
+    
+            if ((!long_only && size <= slen) || (!short_only && size > slen)) {
+                file.seekg(start);
+                file.read(temp, size);
+                temp[size] = '\0';
+    
+                if (regex_search(temp, re) > 0) {
+                    std::cout << temp << std::endl;
+                    num_matches++;
+                }
             }
         }
+    } catch (std::exception const& e) {
+        delete [] temp;
+        throw;
     }
+
+    delete [] temp;
 
     return num_matches;
 }
