@@ -68,6 +68,8 @@ int main(int argc, char **argv)
         case 'w':  // wait before termination
             wait_fortune = true;
             break;
+        default:
+            exit(EXIT_FAILURE);
         }
     }
 
