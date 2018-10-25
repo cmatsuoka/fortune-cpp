@@ -32,40 +32,40 @@ int main(int argc, char **argv)
     int c;
     while ((c = getopt(argc, argv, "acefhilm:n:osw")) != -1) {
         switch (c) {
-        case 'a':
+        case 'a':  // list all fortunes
             fortune.all();
             break;
-        case 'c':
+        case 'c':  // show file name
             fortune.show_filename();
             break;
-        case 'e':
+        case 'e':  // assume all files have equal size
             equal_size = true;
             break;
-        case 'f':
+        case 'f':  // list file probabilities
             list_files = true;
             break;
-        case 'h':
+        case 'h':  // show usage information and exit
             usage(argv[0]);
             exit(EXIT_SUCCESS);
-        case 'i':
+        case 'i':  // case insensitive matches
             case_insensitive = true;
             break;
-        case 'l':
+        case 'l':  // show long messages only
             fortune.long_fortunes();
             break;
-        case 'm':
+        case 'm':  // search regexp matches
             pattern = std::string(optarg);
             break;
-        case 'n':
+        case 'n':  // set the short message threshold
             fortune.short_len(std::stoi(std::string(optarg)));
             break;
-        case 'o':
+        case 'o':  // choose from offensive messages
             fortune.offensive();
             break;
-        case 's':
+        case 's':  // show short messages only
             fortune.short_fortunes();
             break;
-        case 'w':
+        case 'w':  // wait before termination
             wait_fortune = true;
             break;
         }

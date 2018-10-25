@@ -282,6 +282,9 @@ void Fortune::search(std::string pattern, bool case_insensitive)
     regfree(&re);
 }
 
+/**
+ * Display cookie file probabilities and additional info.
+ */
 void Fortune::print_weights()
 {
     for (auto cf : jars) {
