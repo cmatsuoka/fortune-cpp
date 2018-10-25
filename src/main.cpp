@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <map>
 #include <iostream>
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include "fortune.h"
@@ -25,6 +26,7 @@ int main(int argc, char **argv)
     auto equal_size = false;
     auto list_files = false;
     auto case_insensitive = false;
+    auto wait_fortune = false;
     auto pattern = std::string();
 
     int c;
@@ -62,6 +64,9 @@ int main(int argc, char **argv)
             break;
         case 's':
             fortune.short_fortunes();
+            break;
+        case 'w':
+            wait_fortune = true;
             break;
         }
     }
@@ -104,7 +109,10 @@ int main(int argc, char **argv)
         if (pattern != "") {
             fortune.search(pattern, case_insensitive);
         } else {
-            fortune.print();
+            int fort_size = fortune.print();
+            if (wait_fortune) {
+                sleep(std::max(fort_size / CHARS_PER_SEC, MIN_WAIT));
+            }
         }
     } catch (std::exception& e) {
         std::cerr << argv[0] << ": " << e.what() << std::endl;
