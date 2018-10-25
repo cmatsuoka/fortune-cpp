@@ -7,18 +7,6 @@
 #include "file_io.h"
 
 
-Fortune::Fortune() :
-    slen(160),
-    long_only(false),
-    short_only(false),
-    show_file(false),
-    all_fortunes(false),
-    offend(false),
-    jars{}
-{
-}
-
-
 namespace {
 
     bool ends_with(std::string const &s, std::string const &ending) {
@@ -28,7 +16,7 @@ namespace {
         return s.compare(s.length() - ending.length(), ending.length(), ending) == 0;
     }
 
-    std::vector<PathSpec> add_fortune_dir(std::vector<PathSpec>, std::string const& dirname, float val,
+    std::vector<PathSpec> add_fortune_dir(std::vector<PathSpec>, std::string const& path, float val,
         bool all_fortunes, bool offend)
     {
         std::vector<PathSpec> list{};
@@ -36,9 +24,9 @@ namespace {
         DIR *dir;
         struct dirent *entry;
 
-        if ((dir = opendir(dirname.c_str())) != NULL) {
+        if ((dir = opendir(path.c_str())) != NULL) {
             while ((entry = readdir(dir)) != NULL) {
-                auto fn = dirname + File::separator() + std::string(entry->d_name);
+                auto fn = path + File::separator() + std::string(entry->d_name);
                 if (ends_with(fn, ".dat")) {
                     // remove file extension
                     auto name = fn.substr(0, fn.find_last_of("."));
@@ -59,15 +47,15 @@ namespace {
         return list;
     }
 
-    std::vector<PathSpec> add_fortune_file(std::vector<PathSpec>, std::string const& name, float val)
+    std::vector<PathSpec> add_fortune_file(std::vector<PathSpec>, std::string const& path, float val)
     {
         std::vector<PathSpec> list{};
 
-        if (File::is_file(name + ".dat")) {
-            auto entry = std::make_tuple(name, val);
+        if (File::is_file(path + ".dat")) {
+            auto entry = std::make_tuple(path, val);
             list.push_back(entry);
         } else {
-            throw std::runtime_error(name + ": missing strfile data file");
+            throw std::runtime_error(path + ": missing strfile data file");
         }
 
         return list;
@@ -75,6 +63,18 @@ namespace {
 
 }  // namespace
 
+
+Fortune::Fortune(std::string path) :
+    slen(160),
+    long_only(false),
+    short_only(false),
+    show_file(false),
+    all_fortunes(false),
+    offend(false),
+    fortune_dir(path),
+    jars{}
+{
+}
 
 Fortune::~Fortune()
 {
@@ -94,8 +94,10 @@ void Fortune::load(std::string const& what, float val)
 
     if (File::is_directory(what)) {
         files = add_fortune_dir(files, what, val, all_fortunes, offend);
-    } else if (File::is_file(what)) {
+    } else if (File::is_file(what, false)) {
         files = add_fortune_file(files, what, val);
+    } else if (File::is_file(path() + File::separator() + what)) {
+        files = add_fortune_file(files, path() + File::separator() + what, val);
     }
 
     if (files.size() <= 0) {
@@ -272,7 +274,7 @@ void Fortune::search(std::string pattern, bool case_insensitive)
 void Fortune::print_weights()
 {
     for (auto cf : jars) {
-        printf(" %6.2f %5d %5d %5d %s\n",
+        printf(" %6.2f%% %5d %5d %5d  %s\n",
             cf->weight, cf->num_str(), cf->longlen(), cf->shortlen(), cf->path.c_str());
     }
 }

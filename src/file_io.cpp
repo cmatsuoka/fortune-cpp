@@ -80,11 +80,15 @@ File& File::seekg(off_t pos)
  * @param name Full path name
  * @return True if is a regular file
  */
-bool File::is_file(std::string const& name)
+bool File::is_file(std::string const& name, bool except)
 {
     struct stat st;
     if (stat(name.c_str(), &st) < 0) {
-        throw std::runtime_error(name + ": " + error());
+        if (except) {
+            throw std::runtime_error(name + ": " + error());
+        } else {
+            return false;
+        }
     }
     return (st.st_mode & S_IFMT) == S_IFREG;
 }
@@ -94,11 +98,15 @@ bool File::is_file(std::string const& name)
  * @param name Full path name
  * @return True if is a directory
  */
-bool File::is_directory(std::string const& name)
+bool File::is_directory(std::string const& name, bool except)
 {
     struct stat st;
     if (stat(name.c_str(), &st) < 0) {
-        throw std::runtime_error(name + ": " + error());
+        if (except) {
+            throw std::runtime_error(name + ": " + error());
+        } else {
+            return false;
+        }
     }
     return (st.st_mode & S_IFMT) == S_IFDIR;
 }

@@ -1,3 +1,4 @@
+#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 #include <map>
@@ -19,7 +20,7 @@ int main(int argc, char **argv)
     gettimeofday(&t, NULL);
     srand(t.tv_sec * 1000 + t.tv_usec / 1000);
 
-    Fortune fortune{};
+    Fortune fortune(FORTUNE_DIR);
 
     auto equal_size = false;
     auto list_files = false;
@@ -65,12 +66,20 @@ int main(int argc, char **argv)
         }
     }
 
+    // Get file list from command line with optional percentages
     std::map<std::string, float> filemap{};
     if (optind == argc) {
         filemap[FORTUNE_DIR] = -1.0;
     } else {
+        float percentage = -1.0f;
         for (int i = optind; i < argc; i++) {
-            filemap[argv[i]] = 1.0;
+            char *arg = argv[i];
+            if (*arg != '\0' && arg[strlen(arg) - 1] == '%') {
+                percentage = strtof(arg, NULL);
+            } else {
+                filemap[arg] = percentage;
+                percentage = -1.0f;
+            }
         }
     }
 
