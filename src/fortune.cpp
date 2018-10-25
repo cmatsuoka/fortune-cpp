@@ -51,7 +51,7 @@ namespace {
     {
         std::vector<PathSpec> list{};
 
-        if (File::is_file(path + ".dat")) {
+        if (File::is_file(path + ".dat", false)) {
             auto entry = std::make_tuple(path, val);
             list.push_back(entry);
         } else {
@@ -94,10 +94,13 @@ void Fortune::load(std::string const& what, float val)
 
     if (File::is_directory(what)) {
         files = add_fortune_dir(files, what, val, all_fortunes, offend);
-    } else if (File::is_file(what, false)) {
+    } else if (File::is_file(what)) {
         files = add_fortune_file(files, what, val);
-    } else if (File::is_file(path() + File::separator() + what)) {
-        files = add_fortune_file(files, path() + File::separator() + what, val);
+    } else {
+        auto fullname = path() + File::separator() + what;
+        if (File::is_file(fullname), true) {
+            files = add_fortune_file(files, fullname, val);
+        }
     }
 
     if (files.size() <= 0) {
@@ -189,7 +192,7 @@ Fortune& Fortune::offensive()
 }
 
 /**
- * Normalize weights to totalize 100%
+ * Normalize weights to totalize 100%.
  * @return This fortune object
  */
 Fortune& Fortune::normalize_weights()

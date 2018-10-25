@@ -76,8 +76,20 @@ File& File::seekg(off_t pos)
 }
 
 /**
+ * Check whether this file exists.
+ * @param name Full path name
+ * @return True if file exists
+ */
+bool File::exists(std::string const& name)
+{
+    struct stat st;
+    return stat(name.c_str(), &st) == 0;
+}
+
+/**
  * Check whether this name refers to a regular file.
  * @param name Full path name
+ * @param except Throw an exception if file doesn't exist
  * @return True if is a regular file
  */
 bool File::is_file(std::string const& name, bool except)
@@ -96,6 +108,7 @@ bool File::is_file(std::string const& name, bool except)
 /**
  * Check whether this name refers to a directory.
  * @param name Full path name
+ * @param except Throw an exception if file doesn't exist
  * @return True if is a directory
  */
 bool File::is_directory(std::string const& name, bool except)
