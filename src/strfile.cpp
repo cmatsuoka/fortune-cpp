@@ -31,7 +31,7 @@ void Datfile::load(std::string const& path)
 
     version = file.read32b();
 
-    if (version > STRFILE_VERSION) {
+    if (version > Version) {
         throw std::runtime_error("invalid data file version");
     }
 
@@ -46,7 +46,7 @@ void Datfile::load(std::string const& path)
     }
 
     // if sorted or random, sort seek pointers
-    if (flags & (STRFILE_FLAG_RANDOM | STRFILE_FLAG_ORDERED)) {
+    if (flags & (FlagRandom | FlagOrdered)) {
         std::sort(seekpts.begin(), seekpts.end());
     }
 }

@@ -1,14 +1,14 @@
 #ifndef SRC_STRFILE_H_
 #define SRC_STRFILE_H_
 
-#define STRFILE_VERSION      2
-#define STRFILE_FLAG_RANDOM  (0x1 << 0)  // randomized pointers
-#define STRFILE_FLAG_ORDERED (0x1 << 1)  // ordered pointers
-#define STRFILE_FLAG_ROTATED (0x1 << 2)  // rot-13'd text
-
 #include <regex.h>
 #include <string>
 #include <vector>
+
+constexpr uint32_t Version = 2;
+constexpr uint32_t FlagRandom = 0x1 << 0;   // randomized pointers
+constexpr uint32_t FlagOrdered = 0x1 << 1;  // ordered pointers
+constexpr uint32_t FlagRotated = 0x1 << 2;  // rot-13'd text
 
 
 class Datfile {
@@ -25,7 +25,7 @@ class Datfile {
     void load(std::string const&);
     uint32_t start_of(int which) { return seekpts[which]; }
     uint32_t end_of(int which) { return seekpts[which + 1]; }
-    bool is_rotated() { return (flags & STRFILE_FLAG_ROTATED) != 0; }
+    bool is_rotated() { return (flags & FlagRotated) != 0; }
     int size() { return numstr; }
     int num_str() { return numstr; }
     char separator() { return stuff[0]; }
