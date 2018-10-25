@@ -154,7 +154,7 @@ Fortune& Fortune::short_len(int n)
 Fortune& Fortune::equal_size()
 {
     for (auto cf : jars) {
-        cf->weight = 1.0;
+        cf->weight = 100.0f / jars.size();
     }
     return *this;
 }
@@ -198,6 +198,7 @@ Fortune& Fortune::offensive()
 Fortune& Fortune::normalize_weights()
 {
     float total = 100.0f;
+    float residue = 100.0f;
 
     for (auto cf : jars) {
         if (cf->weight > 0.0f) {
@@ -219,6 +220,13 @@ Fortune& Fortune::normalize_weights()
         if (cf->weight < 0.0) {
             cf->weight = total * cf->num_str() / w;
         }
+        residue -= cf->weight;
+    }
+
+    if (residue > 0.1f) {
+        char buffer[100];
+        snprintf(buffer, 100, "no place to put residual probability (%.2f%%)", total);
+        throw std::runtime_error(buffer);
     }
 
     return *this;
