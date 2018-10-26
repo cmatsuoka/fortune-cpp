@@ -2,6 +2,8 @@ A fortune(6) reimplementation in C++.
 
 This is an implementation of the classic BSD fortune, written mostly to
 play with C++ (ported from a Rust version I wrote to play with Rust).
+We don't include the cookie files, get them from fortune-mod or the
+fortunes-* packages available in Linux distributions.
 
 For those not acquainted with fortune(6), it's a small utility that picks
 messages at random from a given set of cookie jar files, such as:
