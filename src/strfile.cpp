@@ -161,7 +161,7 @@ int Strfile::print_matches(regex_t *re, int slen, bool long_only, bool short_onl
                     print_name = false;
                 }
 
-                std::cout << temp << std::endl;
+                std::cout << temp << dat.separator() << std::endl;
                 num_matches++;
             }
         }
