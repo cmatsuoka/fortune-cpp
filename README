@@ -1,0 +1,29 @@
+A fortune(6) reimplementation in C++.
+
+This is an implementation of the classic BSD fortune, written mostly to
+play with C++ (ported from a Rust version I wrote to play with Rust).
+
+For those not acquainted with fortune(6), it's a small utility that picks
+messages at random from a given set of cookie jar files, such as:
+
+$ src/fortune
+It is not a good omen when goldfish commit suicide.
+
+
+Most options from the original fortune are available:
+
+Usage: src/fortune [options] [[n%] file/dir]...
+Options:
+    -a          choose from all lists of maxims
+    -c          show the cookie file from which the fortune came
+    -e          consider all fortune files to be of equal size
+    -f          print out the list of files to be searched
+    -h          display usage information and exit
+    -i          ignore case for -m patterns
+    -l          long dictums only
+    -m pattern  print all fortunes matching the regex
+    -n len      set the longest length considered short
+    -o          choose only from potentially offensive aphorisms
+    -s          short apothegms only
+    -w          wait before termination
+
