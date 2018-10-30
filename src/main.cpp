@@ -1,7 +1,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <algorithm>
 #include <cstdlib>
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
     }
 
     // Get file list from command line with optional percentages
-    std::map<std::string, float> filemap{};
+    std::unordered_map<std::string, float> filemap{};
     if (optind == argc) {
         filemap[FORTUNE_DIR] = -1.0;
     } else {
