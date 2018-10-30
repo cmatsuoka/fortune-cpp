@@ -233,12 +233,19 @@ Fortune& Fortune::normalize_weights()
 }
 
 /**
- * Choose a random cookie file weighted by its number of strings. (FIXME: not yet)
+ * Choose a random cookie file weighted by its number of strings.
  * @return The cookie jar string file
  */
 Strfile *Fortune::pick_jar()
 {
-    int num = rand() % jars.size();
+    std::vector<float> w;
+    for (auto cf : jars) {
+        w.push_back(cf->weight);
+    }
+    // FIXME: ugly mix of rand() and C++11 random
+    std::default_random_engine generator(rand());
+    std::discrete_distribution<int> distribution(w.begin(), w.end());
+    int num = distribution(generator);
     return jars[num];
 }
 
