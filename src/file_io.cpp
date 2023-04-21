@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cerrno>
 #include <fstream>
+#include <stdexcept>
 
 
 namespace {
